@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Administrativo - Restaurante Sabores</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/dashboard-admin.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <h2>Dashboard Admin</h2>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="#overview" class="nav-link active" data-section="overview">
+                            <i class="fas fa-chart-dashboard"></i>
+                            <span>Resumen General</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#employees" class="nav-link" data-section="employees">
+                            <i class="fas fa-users"></i>
+                            <span>Gestión Empleados</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#tables" class="nav-link" data-section="tables">
+                            <i class="fas fa-chair"></i>
+                            <span>Gestión Mesas</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#inventory" class="nav-link" data-section="inventory">
+                            <i class="fas fa-boxes"></i>
+                            <span>Inventario</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#sales" class="nav-link" data-section="sales">
+                            <i class="fas fa-cash-register"></i>
+                            <span>Ventas & Caja</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#orders" class="nav-link" data-section="orders">
+                            <i class="fas fa-clipboard-list"></i>
+                            <span>Pedidos</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#menu-management" class="nav-link" data-section="menu-management">
+                            <i class="fas fa-utensils"></i>
+                            <span>Gestión Menú</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button id="logoutBtn" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Cerrar Sesión</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="main-header">
+                <div class="header-left">
+                    <button class="sidebar-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 id="pageTitle">Resumen General</h1>
+                </div>
+                
+                <div class="header-right">
+                    <div class="notifications">
+                        <button class="notification-btn">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge">3</span>
+                        </button>
+                    </div>
+                    
+                    <div class="user-info">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face" alt="Admin" class="user-avatar">
+                        <span class="user-name">Administrador</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Sections -->
+            <div class="content-wrapper">
+                <!-- Overview Section -->
+                <section id="overview-section" class="content-section active">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>Ventas Hoy</h3>
+                                <p class="stat-value" id="todaySales">$0</p>
+                                <span class="stat-change positive">+12%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>Pedidos Hoy</h3>
+                                <p class="stat-value" id="todayOrders">0</p>
+                                <span class="stat-change positive">+8%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-chair"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>Mesas Ocupadas</h3>
+                                <p class="stat-value" id="occupiedTables">0/0</p>
+                                <span class="stat-change neutral">75%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>Empleados Activos</h3>
+                                <p class="stat-value" id="activeEmployees">0</p>
+                                <span class="stat-change positive">100%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="charts-grid">
+                        <div class="chart-card">
+                            <h3>Ventas de la Semana</h3>
+                            <canvas id="salesChart"></canvas>
+                        </div>
+                        
+                        <div class="chart-card">
+                            <h3>Productos Más Vendidos</h3>
+                            <div id="topProducts" class="top-products-list"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Employees Section -->
+                <section id="employees-section" class="content-section">
+                    <div class="section-header">
+                        <h2>Gestión de Empleados</h2>
+                        <button class="btn btn-primary" onclick="openEmployeeModal()">
+                            <i class="fas fa-plus"></i>
+                            Agregar Empleado
+                        </button>
+                    </div>
+                    
+                    <div class="employees-grid" id="employeesGrid">
+                        <!-- Empleados se cargarán aquí -->
+                    </div>
+                </section>
+
+                <!-- Tables Section -->
+                <section id="tables-section" class="content-section">
+                    <div class="section-header">
+                        <h2>Gestión de Mesas</h2>
+                        <button class="btn btn-primary" onclick="openTableModal()">
+                            <i class="fas fa-plus"></i>
+                            Agregar Mesa
+                        </button>
+                    </div>
+                    
+                    <div class="tables-grid" id="tablesGrid">
+                        <!-- Mesas se cargarán aquí -->
+                    </div>
+                </section>
+
+                <!-- Inventory Section -->
+                <section id="inventory-section" class="content-section">
+                    <div class="section-header">
+                        <h2>Gestión de Inventario</h2>
+                        <button class="btn btn-primary" onclick="openInventoryModal()">
+                            <i class="fas fa-plus"></i>
+                            Agregar Producto
+                        </button>
+                    </div>
+                    
+                    <div class="inventory-filters">
+                        <input type="text" id="inventorySearch" placeholder="Buscar producto..." class="search-input">
+                        <select id="inventoryCategory" class="filter-select">
+                            <option value="">Todas las categorías</option>
+                            <option value="ingredientes">Ingredientes</option>
+                            <option value="bebidas">Bebidas</option>
+                            <option value="utensilios">Utensilios</option>
+                        </select>
+                        <button class="btn btn-warning" onclick="showLowStockAlert()">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Stock Bajo
+                        </button>
+                    </div>
+                    
+                    <div class="inventory-table-container">
+                        <table class="inventory-table" id="inventoryTable">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Categoría</th>
+                                    <th>Stock Actual</th>
+                                    <th>Stock Mínimo</th>
+                                    <th>Unidad</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventoryTableBody">
+                                <!-- Productos se cargarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Sales Section -->
+                <section id="sales-section" class="content-section">
+                    <div class="section-header">
+                        <h2>Ventas y Cuadre de Caja</h2>
+                        <div class="sales-actions">
+                            <button class="btn btn-success" onclick="openCashRegister()">
+                                <i class="fas fa-cash-register"></i>
+                                Abrir Caja
+                            </button>
+                            <button class="btn btn-warning" onclick="closeCashRegister()">
+                                <i class="fas fa-lock"></i>
+                                Cerrar Caja
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="sales-summary">
+                        <div class="cash-status">
+                            <h3>Estado de Caja</h3>
+                            <div class="cash-info">
+                                <div class="cash-item">
+                                    <span>Efectivo Inicial:</span>
+                                    <span id="initialCash">$0</span>
+                                </div>
+                                <div class="cash-item">
+                                    <span>Ventas en Efectivo:</span>
+                                    <span id="cashSales">$0</span>
+                                </div>
+                                <div class="cash-item">
+                                    <span>Ventas con Tarjeta:</span>
+                                    <span id="cardSales">$0</span>
+                                </div>
+                                <div class="cash-item">
+                                    <span>Transferencias:</span>
+                                    <span id="transferSales">$0</span>
+                                </div>
+                                <div class="cash-item total">
+                                    <span>Total en Caja:</span>
+                                    <span id="totalCash">$0</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="sales-chart">
+                            <h3>Ventas por Método de Pago</h3>
+                            <canvas id="paymentMethodChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="sales-table-container">
+                        <h3>Historial de Ventas</h3>
+                        <table class="sales-table" id="salesTable">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Pedido #</th>
+                                    <th>Cliente</th>
+                                    <th>Método Pago</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="salesTableBody">
+                                <!-- Ventas se cargarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Orders Section -->
+                <section id="orders-section" class="content-section">
+                    <div class="section-header">
+                        <h2>Gestión de Pedidos</h2>
+                        <div class="order-filters">
+                            <select id="orderStatusFilter" class="filter-select">
+                                <option value="">Todos los estados</option>
+                                <option value="pendiente">Pendiente</option>
+                                <option value="preparando">Preparando</option>
+                                <option value="listo">Listo</option>
+                                <option value="entregado">Entregado</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="orders-container" id="ordersContainer">
+                        <!-- Pedidos se cargarán aquí -->
+                    </div>
+                </section>
+
+                <!-- Menu Management Section -->
+                <section id="menu-management-section" class="content-section">
+                    <div class="section-header">
+                        <h2>Gestión del Menú</h2>
+                        <button class="btn btn-primary" onclick="openMenuItemModal()">
+                            <i class="fas fa-plus"></i>
+                            Agregar Producto
+                        </button>
+                    </div>
+                    
+                    <div class="menu-categories" id="menuCategories">
+                        <!-- Categorías del menú se cargarán aquí -->
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Employee Modal -->
+    <div id="employeeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="employeeModalTitle">Agregar Empleado</h3>
+                <button class="modal-close" onclick="closeEmployeeModal()">&times;</button>
+            </div>
+            <form id="employeeForm" class="modal-form">
+                <div class="form-group">
+                    <label for="employeeName">Nombre Completo</label>
+                    <input type="text" id="employeeName" required>
+                </div>
+                <div class="form-group">
+                    <label for="employeeEmail">Email</label>
+                    <input type="email" id="employeeEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="employeePhone">Teléfono</label>
+                    <input type="tel" id="employeePhone" required>
+                </div>
+                <div class="form-group">
+                    <label for="employeeRole">Cargo</label>
+                    <select id="employeeRole" required>
+                        <option value="">Seleccionar cargo</option>
+                        <option value="mesero">Mesero</option>
+                        <option value="cocinero">Cocinero</option>
+                        <option value="cajero">Cajero</option>
+                        <option value="administrador">Administrador</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="employeeSalary">Salario</label>
+                    <input type="number" id="employeeSalary" min="0" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeEmployeeModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Table Modal -->
+    <div id="tableModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="tableModalTitle">Agregar Mesa</h3>
+                <button class="modal-close" onclick="closeTableModal()">&times;</button>
+            </div>
+            <form id="tableForm" class="modal-form">
+                <div class="form-group">
+                    <label for="tableNumber">Número de Mesa</label>
+                    <input type="number" id="tableNumber" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="tableCapacity">Capacidad</label>
+                    <input type="number" id="tableCapacity" min="1" max="20" required>
+                </div>
+                <div class="form-group">
+                    <label for="tableLocation">Ubicación</label>
+                    <select id="tableLocation" required>
+                        <option value="">Seleccionar ubicación</option>
+                        <option value="interior">Interior</option>
+                        <option value="terraza">Terraza</option>
+                        <option value="privado">Área Privada</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeTableModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Inventory Modal -->
+    <div id="inventoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="inventoryModalTitle">Agregar Producto al Inventario</h3>
+                <button class="modal-close" onclick="closeInventoryModal()">&times;</button>
+            </div>
+            <form id="inventoryForm" class="modal-form">
+                <div class="form-group">
+                    <label for="inventoryName">Nombre del Producto</label>
+                    <input type="text" id="inventoryName" required>
+                </div>
+                <div class="form-group">
+                    <label for="inventoryCategory">Categoría</label>
+                    <select id="inventoryCategory" required>
+                        <option value="">Seleccionar categoría</option>
+                        <option value="ingredientes">Ingredientes</option>
+                        <option value="bebidas">Bebidas</option>
+                        <option value="utensilios">Utensilios</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="inventoryStock">Stock Actual</label>
+                    <input type="number" id="inventoryStock" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="inventoryMinStock">Stock Mínimo</label>
+                    <input type="number" id="inventoryMinStock" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="inventoryUnit">Unidad de Medida</label>
+                    <select id="inventoryUnit" required>
+                        <option value="">Seleccionar unidad</option>
+                        <option value="kg">Kilogramos</option>
+                        <option value="g">Gramos</option>
+                        <option value="l">Litros</option>
+                        <option value="ml">Mililitros</option>
+                        <option value="unidad">Unidades</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeInventoryModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Cash Register Modal -->
+    <div id="cashRegisterModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="cashRegisterModalTitle">Abrir Caja</h3>
+                <button class="modal-close" onclick="closeCashRegisterModal()">&times;</button>
+            </div>
+            <form id="cashRegisterForm" class="modal-form">
+                <div class="form-group">
+                    <label for="initialAmount">Monto Inicial</label>
+                    <input type="number" id="initialAmount" min="0" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="cashierName">Cajero</label>
+                    <input type="text" id="cashierName" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeCashRegisterModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Abrir Caja</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script type="module" src="../js/dashboard-admin.js"></script>
+</body>
+</html>
